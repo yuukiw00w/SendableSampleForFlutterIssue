@@ -25,21 +25,19 @@ final class SampleApiImpl: SampleApi, Sendable {
     // error: Call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
 //    let sampleFetcherForMainActor: SampleFetcherForMainActor = .init()
     
-    func fetchSampleFromMainActor(completion: @escaping (Result<Sample, Error>) -> Void) {
+    func fetchSampleFromMainActor(completion: @MainActor @Sendable @escaping (Result<Sample, Error>) -> Void) {
         Task { @MainActor in
             let sampleFetcher: SampleFetcherForMainActor = .init()
             let sample = sampleFetcher.fetchSample()
-            // has warning: Capture of 'completion' with non-sendable type '(Result<Sample, any Error>) -> Void' in a `@Sendable` closure
             completion(.success(sample))
         }
     }
     
-    func fetchSampleFromActor(completion: @escaping (Result<Sample, Error>) -> Void) {
+    func fetchSampleFromActor(completion: @MainActor @Sendable @escaping (Result<Sample, Error>) -> Void) {
         Task.detached {
             let sampleFetcher = SampleFetcherForActor()
             let sample = await sampleFetcher.fetchSample()
-            // has warning: Capture of 'completion' with non-sendable type '(Result<Sample, any Error>) -> Void' in a `@Sendable` closure
-            completion(.success(sample))
+            await completion(.success(sample))
         }
     }
 }
