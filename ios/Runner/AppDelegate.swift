@@ -22,18 +22,24 @@ import Flutter
 }
 
 final class SampleApiImpl: SampleApi, Sendable {
-    private let sampleFetcherForMainActor: SampleFetcherForMainActor = .init()
+    // error: Call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+//    let sampleFetcherForMainActor: SampleFetcherForMainActor = .init()
     
-    func fetchSampleFromMainActor(completion: @MainActor @Sendable @escaping (Result<Sample, Error>) -> Void) {
-        let sample = sampleFetcherForMainActor.fetchSample()
-        completion(.success(sample))
+    func fetchSampleFromMainActor(completion: @escaping (Result<Sample, Error>) -> Void) {
+        Task { @MainActor in
+            let sampleFetcherForMainActor: SampleFetcherForMainActor = .init()
+            let sample = sampleFetcherForMainActor.fetchSample()
+            // has warning: Capture of 'completion' with non-sendable type '(Result<Sample, any Error>) -> Void' in a `@Sendable` closure
+            completion(.success(sample))
+        }
     }
     
-    func fetchSampleFromActor(completion: @MainActor @Sendable @escaping (Result<Sample, Error>) -> Void) {
+    func fetchSampleFromActor(completion: @escaping (Result<Sample, Error>) -> Void) {
         Task.detached {
             let sampleFetcher = SampleFetcherForActor()
             let sample = await sampleFetcher.fetchSample()
-            await completion(.success(sample))
+            // has warning: Capture of 'completion' with non-sendable type '(Result<Sample, any Error>) -> Void' in a `@Sendable` closure
+            completion(.success(sample))
         }
     }
 }
