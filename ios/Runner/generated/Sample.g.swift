@@ -40,7 +40,8 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
 }
 
 /// Generated class from Pigeon that represents data sent in messages.
-struct Sample {
+// add Sendable to struct
+struct Sample: Sendable {
   var text: String
   var id: Int64
 
@@ -98,12 +99,17 @@ class SampleApiCodec: FlutterStandardMessageCodec {
 }
 
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
+// add @MainActor to protocol
+@MainActor
 protocol SampleApi {
-  func fetchSampleFromMainActor(completion: @escaping (Result<Sample, Error>) -> Void)
-  func fetchSampleFromActor(completion: @escaping (Result<Sample, Error>) -> Void)
+  // add @MainActor and @Sendable to completion handler
+  func fetchSampleFromMainActor(completion: @MainActor @Sendable @escaping (Result<Sample, Error>) -> Void)
+  func fetchSampleFromActor(completion: @MainActor @Sendable @escaping (Result<Sample, Error>) -> Void)
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
+// add @MainActor to ***Setup class
+@MainActor
 class SampleApiSetup {
   /// The codec used by SampleApi.
   static var codec: FlutterStandardMessageCodec { SampleApiCodec.shared }

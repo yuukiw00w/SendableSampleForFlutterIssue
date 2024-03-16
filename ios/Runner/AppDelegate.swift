@@ -24,16 +24,16 @@ import Flutter
 final class SampleApiImpl: SampleApi, Sendable {
     private let sampleFetcherForMainActor: SampleFetcherForMainActor = .init()
     
-    func fetchSampleFromMainActor(completion: @escaping (Result<Sample, Error>) -> Void) {
+    func fetchSampleFromMainActor(completion: @MainActor @Sendable @escaping (Result<Sample, Error>) -> Void) {
         let sample = sampleFetcherForMainActor.fetchSample()
         completion(.success(sample))
     }
     
-    func fetchSampleFromActor(completion: @escaping (Result<Sample, Error>) -> Void) {
-        Task {
+    func fetchSampleFromActor(completion: @MainActor @Sendable @escaping (Result<Sample, Error>) -> Void) {
+        Task.detached {
             let sampleFetcher = SampleFetcherForActor()
             let sample = await sampleFetcher.fetchSample()
-            completion(.success(sample))
+            await completion(.success(sample))
         }
     }
 }
