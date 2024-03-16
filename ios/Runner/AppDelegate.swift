@@ -27,8 +27,8 @@ final class SampleApiImpl: SampleApi, Sendable {
     
     func fetchSampleFromMainActor(completion: @escaping (Result<Sample, Error>) -> Void) {
         Task { @MainActor in
-            let sampleFetcherForMainActor: SampleFetcherForMainActor = .init()
-            let sample = sampleFetcherForMainActor.fetchSample()
+            let sampleFetcher: SampleFetcherForMainActor = .init()
+            let sample = sampleFetcher.fetchSample()
             // has warning: Capture of 'completion' with non-sendable type '(Result<Sample, any Error>) -> Void' in a `@Sendable` closure
             completion(.success(sample))
         }
