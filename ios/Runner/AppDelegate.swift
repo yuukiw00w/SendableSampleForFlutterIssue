@@ -23,12 +23,11 @@ import Flutter
 
 final class SampleApiImpl: SampleApi, Sendable {
     // error: Call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
-//    let sampleFetcherForMainActor: SampleFetcherForMainActor = .init()
+    let sampleFetcherForMainActor: SampleFetcherForMainActor = .init()
     
     func fetchSampleFromMainActor(completion: @MainActor @Sendable @escaping (Result<Sample, Error>) -> Void) {
         Task { @MainActor in
-            let sampleFetcher: SampleFetcherForMainActor = .init()
-            let sample = sampleFetcher.fetchSample()
+            let sample = sampleFetcherForMainActor.fetchSample()
             completion(.success(sample))
         }
     }
