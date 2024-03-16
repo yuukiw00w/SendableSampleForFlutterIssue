@@ -98,10 +98,9 @@ class SampleApiCodec: FlutterStandardMessageCodec {
 }
 
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
-@MainActor
 protocol SampleApi {
-  func fetchSampleFromMainActor(completion: @MainActor @Sendable @escaping (Result<Sample, Error>) -> Void)
-  func fetchSampleFromActor(completion: @MainActor @Sendable @escaping (Result<Sample, Error>) -> Void)
+  func fetchSampleFromMainActor(completion: @Sendable @escaping (Result<Sample, Error>) -> Void)
+  func fetchSampleFromActor(completion: @Sendable @escaping (Result<Sample, Error>) -> Void)
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
@@ -109,7 +108,6 @@ class SampleApiSetup {
   /// The codec used by SampleApi.
   static var codec: FlutterStandardMessageCodec { SampleApiCodec.shared }
   /// Sets up an instance of `SampleApi` to handle messages through the `binaryMessenger`.
-  @MainActor
   static func setUp(binaryMessenger: FlutterBinaryMessenger, api: SampleApi?) {
     let fetchSampleFromMainActorChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.sendable_sample_for_flutter_issue_140439.SampleApi.fetchSampleFromMainActor", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
