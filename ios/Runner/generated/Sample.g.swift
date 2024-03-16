@@ -98,6 +98,7 @@ class SampleApiCodec: FlutterStandardMessageCodec {
 }
 
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
+@MainActor
 protocol SampleApi {
   func fetchSampleFromMainActor(completion: @MainActor @Sendable @escaping (Result<Sample, Error>) -> Void)
   func fetchSampleFromActor(completion: @MainActor @Sendable @escaping (Result<Sample, Error>) -> Void)
